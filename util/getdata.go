@@ -1,6 +1,7 @@
 package util
 
 import (
+	"fmt"
 	"io"
 	"net/http"
 	"strings"
@@ -14,7 +15,8 @@ func GetData(url, sessionCookie string) ([]byte, error) {
 	if err != nil {
 		return nil, err
 	}
-	request.Header.Set("Cookie", sessionCookie)
+
+	request.AddCookie(&http.Cookie{Name: "session", Value: sessionCookie})
 
 	client := &http.Client{
 		Timeout: time.Duration(time.Second * 3),
@@ -23,6 +25,9 @@ func GetData(url, sessionCookie string) ([]byte, error) {
 	response, err := client.Do(request)
 	if err != nil {
 		return nil, err
+	}
+	if response.StatusCode != http.StatusOK {
+		return nil, fmt.Errorf("unexpected response: %d", response.StatusCode)
 	}
 
 	return io.ReadAll(response.Body)
