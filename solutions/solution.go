@@ -2,6 +2,8 @@ package solutions
 
 import (
 	"fmt"
+
+	"github.com/tomaskul/advent-of-code-23/solutions/day01"
 )
 
 type Solution interface {
@@ -16,7 +18,7 @@ type SolutionRegistry struct {
 func NewSolutionRegistry(sessionCookie string) *SolutionRegistry {
 	return &SolutionRegistry{
 		registry: map[int]Solution{
-			//1: &day01.Day01{SessionCookie: sessionCookie},
+			1: &day01.Day01{SessionCookie: sessionCookie},
 			//2: ...
 		},
 	}
