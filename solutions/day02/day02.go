@@ -39,6 +39,8 @@ func (s *Day02) PrintPart1() {
 
 func (s *Day02) PrintPart2() {
 	s.getData()
+
+	fmt.Println(util.Sum(powers(parseInputData(s.rows))))
 }
 
 func countPossibleGames(expectation rgb, games []game) []int {
@@ -72,8 +74,6 @@ func parseInputData(rows []string) []game {
 		gamesPlayed[i] = game
 	}
 
-	//fmt.Printf("debug: [:5] games: %+v\n\n", gamesPlayed[:5])
-	//fmt.Printf("debug: [95:] games: %+v\n\n", gamesPlayed[95:])
 	return gamesPlayed
 }
 
@@ -97,5 +97,26 @@ func parseRgb(cubesDrawn []string) rgb {
 			result.b, _ = strconv.Atoi(strings.TrimSpace(strings.TrimSuffix(token, " blue")))
 		}
 	}
+	return result
+}
+
+func powers(games []game) []int {
+	result := make([]int, len(games))
+	for i, game := range games {
+		maxR, maxG, maxB := 0, 0, 0
+		for _, rgb := range game.sets {
+			if rgb.r > maxR {
+				maxR = rgb.r
+			}
+			if rgb.g > maxG {
+				maxG = rgb.g
+			}
+			if rgb.b > maxB {
+				maxB = rgb.b
+			}
+		}
+		result[i] = maxR * maxG * maxB
+	}
+
 	return result
 }

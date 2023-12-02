@@ -100,3 +100,47 @@ func Test_countPossibleGames(t *testing.T) {
 		})
 	}
 }
+
+func Test_powers(t *testing.T) {
+	test := []struct {
+		name     string
+		input    []game
+		expected []int
+	}{
+		{
+			name: "sample",
+			input: []game{
+				{
+					id:   1,
+					sets: set{rgb{b: 3, r: 4}, rgb{r: 1, g: 2, b: 6}, rgb{g: 2}},
+				},
+				{
+					id:   2,
+					sets: set{rgb{b: 1, g: 2}, rgb{g: 3, b: 4, r: 1}, rgb{g: 1, b: 1}},
+				},
+				{
+					id:   3,
+					sets: set{rgb{g: 8, b: 6, r: 20}, rgb{b: 5, r: 4, g: 13}, rgb{g: 5, r: 1}},
+				},
+				{
+					id:   4,
+					sets: set{rgb{g: 1, r: 3, b: 6}, rgb{g: 3, r: 6}, rgb{g: 3, b: 15, r: 14}},
+				},
+				{
+					id:   5,
+					sets: set{rgb{r: 6, b: 1, g: 3}, rgb{b: 2, r: 1, g: 2}},
+				},
+			},
+			expected: []int{48, 12, 1560, 630, 36},
+		},
+	}
+
+	for _, tt := range test {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := powers(tt.input)
+			if !reflect.DeepEqual(tt.expected, actual) {
+				t.Errorf("expected: %v, got: %v", tt.expected, actual)
+			}
+		})
+	}
+}
