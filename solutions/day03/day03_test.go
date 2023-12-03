@@ -58,6 +58,27 @@ func Test_isAdjacentToSymbol(t *testing.T) {
 			},
 			expected: false,
 		},
+
+		{
+			name: "not adj - top right overshoot",
+			arguments: args{
+				subject:    "617",
+				rowAbove:   "....###...",
+				subjectRow: "617.......",
+				rowBelow:   ".....+.58.",
+			},
+			expected: false,
+		},
+		{
+			name: "not adj - bottom right overshoot",
+			arguments: args{
+				subject:    "617",
+				rowAbove:   "......#...",
+				subjectRow: "617.......",
+				rowBelow:   "....++.58.",
+			},
+			expected: false,
+		},
 	}
 
 	for _, tt := range tests {
