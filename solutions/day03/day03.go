@@ -23,7 +23,7 @@ func (s *Day03) getData() {
 func (s *Day03) PrintPart1() {
 	s.getData()
 
-	fmt.Println("WIP")
+	fmt.Println(util.Sum(numbersWithAdjacentSymbols(s.rows)))
 }
 
 func (s *Day03) PrintPart2() {
@@ -75,18 +75,24 @@ func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) bool {
 
 	rightIndex := rowIndex + subjectLength - 1
 	if rowIndex+subjectLength < len(subjectRow) {
-		rightIndex = rowIndex + subjectLength
-		if nonFillerRegex.Match([]byte{subjectRow[rightIndex]}) {
+		if nonFillerRegex.Match([]byte{subjectRow[rowIndex+subjectLength]}) {
+			return true
+		}
+		rightIndex = rowIndex + subjectLength + 1
+	}
+
+	if rowAbove != "" {
+		searchSpace := rowAbove[leftIndex:rightIndex]
+		if nonFillerRegex.Match([]byte(searchSpace)) {
 			return true
 		}
 	}
 
-	if rowAbove != "" && nonFillerRegex.Match([]byte(rowAbove[leftIndex:rightIndex])) {
-		return true
-	}
-
-	if rowBelow != "" && nonFillerRegex.Match([]byte(rowBelow[leftIndex:rightIndex])) {
-		return true
+	if rowBelow != "" {
+		searchSpace := rowBelow[leftIndex:rightIndex]
+		if nonFillerRegex.Match([]byte(searchSpace)) {
+			return true
+		}
 	}
 
 	return false
