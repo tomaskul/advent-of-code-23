@@ -1,29 +1,129 @@
 package day03
 
 import (
-	"reflect"
 	"testing"
+
+	"github.com/tomaskul/advent-of-code-23/util"
 )
 
-func Test_parseInputData(t *testing.T) {
+func Test_isAdjacentToSymbol(t *testing.T) {
+	type args struct {
+		subject    string
+		rowAbove   string
+		subjectRow string
+		rowBelow   string
+	}
 	tests := []struct {
-		name     string
-		input    []string
-		expected any
+		name      string
+		arguments args
+		expected  bool
 	}{
 		{
-			name:     "sample",
-			input:    []string{},
-			expected: 0,
+			name: "sample - rows[:2] - 467",
+			arguments: args{
+				subject:    "467",
+				rowAbove:   "",
+				subjectRow: "467..114..",
+				rowBelow:   "...*......",
+			},
+			expected: true,
+		},
+		{
+			name: "sample - rows[:2] - 114",
+			arguments: args{
+				subject:    "114",
+				rowAbove:   "",
+				subjectRow: "467..114..",
+				rowBelow:   "...*......",
+			},
+			expected: false,
+		},
+		{
+			name: "sample - rows[3:5] - 617",
+			arguments: args{
+				subject:    "617",
+				rowAbove:   "......#...",
+				subjectRow: "617*......",
+				rowBelow:   ".....+.58.",
+			},
+			expected: true,
+		},
+		{
+			name: "sample - rows[4:6] - 58",
+			arguments: args{
+				subject:    "58",
+				rowAbove:   "617*......",
+				subjectRow: ".....+.58.",
+				rowBelow:   "..592.....",
+			},
+			expected: false,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := parseInputData(tt.input)
-			if !reflect.DeepEqual(tt.expected, actual) {
+			actual := isAdjacentToSymbol(tt.arguments.subject, tt.arguments.rowAbove, tt.arguments.subjectRow, tt.arguments.rowBelow)
+			if tt.expected != actual {
 				t.Errorf("expected: %v, got: %v", tt.expected, actual)
+			}
+
+		})
+	}
+}
+
+func Test_numbersWithAdjacentSymbols(t *testing.T) {
+	tests := []struct {
+		name        string
+		input       []string
+		expectedSum int
+	}{
+		{
+			name: "sample",
+			input: []string{
+				"467..114..",
+				"...*......",
+				"..35..633.",
+				"......#...",
+				"617*......",
+				".....+.58.",
+				"..592.....",
+				"......755.",
+				"...$.*....",
+				".664.598..",
+			},
+			expectedSum: 4361,
+		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := util.Sum(numbersWithAdjacentSymbols(tt.input))
+			if tt.expectedSum != actual {
+				t.Errorf("expected: %v, got: %v", tt.expectedSum, actual)
 			}
 		})
 	}
 }
+
+// func Test_parseInputData(t *testing.T) {
+// 	tests := []struct {
+// 		name     string
+// 		input    []string
+// 		expected any
+// 	}{
+// 		{
+// 			name:     "sample",
+// 			input:    []string{},
+// 			expected: 0,
+// 		},
+// 	}
+
+// 	for _, tt := range tests {
+// 		t.Run(tt.name, func(t *testing.T) {
+// 			actual := parseInputData(tt.input)
+// 			if !reflect.DeepEqual(tt.expected, actual) {
+// 				t.Errorf("expected: %v, got: %v", tt.expected, actual)
+// 			}
+// 		})
+// 	}
+// }
