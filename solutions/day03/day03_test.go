@@ -58,7 +58,6 @@ func Test_isAdjacentToSymbol(t *testing.T) {
 			},
 			expected: false,
 		},
-
 		{
 			name: "not adj - top right overshoot",
 			arguments: args{
@@ -79,11 +78,32 @@ func Test_isAdjacentToSymbol(t *testing.T) {
 			},
 			expected: false,
 		},
+
+		{
+			name: "not adj - top left overshoot",
+			arguments: args{
+				subject:    "77",
+				rowAbove:   "#.........",
+				subjectRow: "..77......",
+				rowBelow:   ".....+.58.",
+			},
+			expected: false,
+		},
+		{
+			name: "not adj - bottom left overshoot",
+			arguments: args{
+				subject:    "77",
+				rowAbove:   "......#...",
+				subjectRow: "..77......",
+				rowBelow:   "#....+.58.",
+			},
+			expected: false,
+		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := isAdjacentToSymbol(tt.arguments.subject, tt.arguments.rowAbove, tt.arguments.subjectRow, tt.arguments.rowBelow)
+			actual, _ := isAdjacentToSymbol(tt.arguments.subject, tt.arguments.rowAbove, tt.arguments.subjectRow, tt.arguments.rowBelow)
 			if tt.expected != actual {
 				t.Errorf("expected: %v, got: %v", tt.expected, actual)
 			}
@@ -113,6 +133,15 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 				".664.598..",
 			},
 			expectedSum: 4361,
+		},
+		{
+			name: "duplicate number",
+			input: []string{
+				"..#.........",
+				".33.....33..",
+				"............",
+			},
+			expectedSum: 33,
 		},
 	}
 
