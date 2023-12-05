@@ -4,6 +4,8 @@ import (
 	"fmt"
 	"io"
 	"net/http"
+	"os"
+	"path/filepath"
 	"strings"
 	"time"
 )
@@ -43,4 +45,41 @@ func GetRows(url, sessionCookie string) []string {
 
 	rows := strings.Split(string(bytes), "\n")
 	return rows[:len(rows)-1]
+}
+
+// GetCachedRows sends a HTTP GET request using auth session cookie to
+// specified (advent of code) URL. After successful request, data is saved to local file.
+func GetCachedRows(url, fileName, fileExt, sessionCookie string) ([]string, error) {
+	filePath := fmt.Sprintf("data/%s%s", fileName, fileExt)
+	data, err := os.ReadFile(filePath)
+	if err != nil {
+		dataToSave, err := GetData(url, sessionCookie)
+		if err != nil {
+			return []string{}, err
+		}
+
+		if err = saveDataToFile(filePath, dataToSave); err != nil {
+			return []string{}, err
+		}
+
+		data, err = os.ReadFile(filePath)
+		if err != nil {
+			return []string{}, err
+		}
+	}
+
+	rows := strings.Split(string(data), "\n")
+	return rows[:len(rows)-1], nil
+}
+
+// saveDataToFile saves data using specified name to solution data folder.
+func saveDataToFile(filePath string, data []byte) error {
+	if err := os.MkdirAll(filepath.Dir(filePath), 0750); err != nil {
+		return fmt.Errorf("error creating directory for solution data files: %v", err)
+	}
+	if err := os.WriteFile(filePath, data, 0755); err != nil {
+		return fmt.Errorf("error saving file %q: %v", filePath, err)
+	}
+
+	return nil
 }

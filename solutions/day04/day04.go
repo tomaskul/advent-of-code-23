@@ -60,7 +60,7 @@ func (c *scratchcard) countMatches() int {
 
 func (s *Day04) getData() {
 	if s.rows == nil {
-		s.rows = util.GetRows("https://adventofcode.com/2023/day/4/input", s.SessionCookie)
+		s.rows, _ = util.GetCachedRows("https://adventofcode.com/2023/day/4/input", "4", ".txt", s.SessionCookie)
 	}
 }
 
