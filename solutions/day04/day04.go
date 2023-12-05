@@ -84,7 +84,7 @@ func parseInputData(rows []string) []scratchcard {
 		card := scratchcard{}
 
 		tokens := strings.Split(row, ":")
-		card.id, _ = strconv.Atoi(strings.TrimPrefix(tokens[0], "Card "))
+		card.id, _ = strconv.Atoi(strings.TrimSpace(strings.TrimPrefix(tokens[0], "Card")))
 
 		sides := strings.Split(tokens[1], "|")
 		card.winningValues = getIntValues(strings.Split(sides[0], " "))
@@ -110,7 +110,6 @@ func getIntValues(input []string) []int {
 
 func (s *Day04) PrintPart2() {
 	s.getData()
-
 	cardMap := traverseCards(parseInputData(s.rows))
 	total := 0
 	for _, v := range cardMap {
