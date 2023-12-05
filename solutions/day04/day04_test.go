@@ -122,7 +122,7 @@ func TestScratchcard_evaluateScratchcards(t *testing.T) {
 	}
 }
 
-func Test_pathThroughScratchcards(t *testing.T) {
+func Test_traverseCards(t *testing.T) {
 	tests := []struct {
 		name              string
 		allScratchcards   []scratchcard
@@ -171,6 +171,15 @@ func Test_pathThroughScratchcards(t *testing.T) {
 				6: 1,
 			},
 		},
+	}
+
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			actual := traverseCards(tt.allScratchcards)
+			if !reflect.DeepEqual(tt.expectedFinalHand, actual) {
+				t.Errorf("expected: %v, got: %v", tt.expectedFinalHand, actual)
+			}
+		})
 	}
 
 }

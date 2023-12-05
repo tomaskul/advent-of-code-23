@@ -43,6 +43,21 @@ func (c *scratchcard) calculatePoints() int {
 	return result
 }
 
+func (c *scratchcard) countMatches() int {
+	result := 0
+
+	for _, actual := range c.actualValues {
+		for _, winning := range c.winningValues {
+			if actual == winning {
+				result++
+				break
+			}
+		}
+	}
+
+	return result
+}
+
 func (s *Day04) getData() {
 	if s.rows == nil {
 		s.rows = util.GetRows("https://adventofcode.com/2023/day/4/input", s.SessionCookie)
@@ -95,16 +110,22 @@ func getIntValues(input []string) []int {
 
 func (s *Day04) PrintPart2() {
 	s.getData()
+
+	cardMap := traverseCards(parseInputData(s.rows))
+	total := 0
+	for _, v := range cardMap {
+		total += v
+	}
+	fmt.Println(total)
 }
 
-func traverseCards(allCards []scratchcard) {
+func traverseCards(allCards []scratchcard) map[int]int {
 	cardLookup := createCardLookup(allCards)
+	//fmt.Printf("debug cardLookup: %v\n", cardLookup)
 
 	root := node{parent: nil, data: cardLookup[1]}
-	root.children = root.getChildren(cardLookup)
-	for _, childNode := range root.children {
-
-	}
+	tree := recurseTree(&root, cardLookup)
+	return recurseTreeCountCards(tree)
 }
 
 func createCardLookup(cards []scratchcard) map[int]scratchcard {
@@ -115,57 +136,54 @@ func createCardLookup(cards []scratchcard) map[int]scratchcard {
 	return result
 }
 
-func (n *node) getChildren(cardLookup map[int]scratchcard) []node {
-	matchingNumbers := n.data.calculatePoints()
+func recurseTree(n *node, cardLookup map[int]scratchcard) node {
+	children := getChildren(n, cardLookup)
+	if children == nil || len(children) == 0 {
+		return *n
+	}
+
+	resultChildren := []node{}
+	for _, child := range children {
+		resultChildren = append(resultChildren, recurseTree(&child, cardLookup))
+	}
+	n.children = resultChildren
+	return *n
+}
+
+func getChildren(n *node, cardLookup map[int]scratchcard) []node {
+	matchingNumbers := n.data.countMatches()
 	if matchingNumbers == 0 {
 		return []node{}
 	}
 	result := []node{}
-	for i := 1; i < matchingNumbers+1; i++ {
-		result = append(result, node{parent: &n.data, data: cardLookup[n.data.id+i]})
+	for i := 0; i < matchingNumbers; i++ {
+		scratchcard, ok := cardLookup[n.data.id+i+1]
+		if !ok {
+			fmt.Printf("unable to find card with id: %d+%d+1\n", n.data.id, i)
+			continue
+		}
+		result = append(result, node{parent: &n.data, data: scratchcard})
 	}
 	return result
 }
 
-// func findNewChildNodes(dest *[]node, data []scratchcard, cardLookup map[int]scratchcard) {
+func recurseTreeCountCards(n node) map[int]int {
+	result := map[int]int{n.data.id: 1}
+	if n.children == nil || len(n.children) == 0 {
+		return result
+	}
 
-// }
+	for _, child := range n.children {
+		childMap := recurseTreeCountCards(child)
+		for id, count := range childMap {
+			_, ok := result[id]
+			if ok {
+				result[id] = result[id] + count
+			} else {
+				result[id] = count
+			}
+		}
+	}
 
-// func pathThroughScratchcards(allCards []scratchcard) map[int]int {
-// 	result := make(map[int]int)
-// 	for _, scCard := range allCards {
-// 		result[scCard.id] = 0
-// 	}
-
-// 	cardsCurrentlyPossessed := []scratchcard{allCards[0]}
-
-// 	inPlay = true
-// 	for inPlay {
-// 		wins := evaluateScratchcardsPt2(cardsCurrentlyPossessed)
-// 		for id, nextSet := range wins {
-// 			result[id] = result[id] + nextSet
-
-// 			cardsCurrentlyPossessed = append(cardsCurrentlyPossessed, allCards)
-// 		}
-// 	}
-
-// 	return result
-// }
-
-// func evaluateScratchcardsPt2(input []scratchcard) map[int]int {
-// 	result := make(map[int]int, 0)
-// 	for _, scratchcard := range input {
-// 		nextSet := scratchcard.calculatePoints()
-// 		if nextSet == 0 {
-// 			continue
-// 		}
-
-// 		currentCount, ok := result[scratchcard.id]
-// 		if ok {
-// 			result[scratchcard.id] = currentCount + nextSet
-// 		} else {
-// 			result[scratchcard.id] = nextSet
-// 		}
-// 	}
-// 	return result
-// }
+	return result
+}
