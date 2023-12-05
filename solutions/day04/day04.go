@@ -110,6 +110,8 @@ func getIntValues(input []string) []int {
 
 func (s *Day04) PrintPart2() {
 	s.getData()
+
+	fmt.Println("PS. A pretty slow implementation, give it time.")
 	cardMap := traverseCards(parseInputData(s.rows))
 	total := 0
 	for _, v := range cardMap {
