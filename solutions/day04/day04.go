@@ -121,11 +121,23 @@ func (s *Day04) PrintPart2() {
 
 func traverseCards(allCards []scratchcard) map[int]int {
 	cardLookup := createCardLookup(allCards)
-	//fmt.Printf("debug cardLookup: %v\n", cardLookup)
 
-	root := node{parent: nil, data: cardLookup[1]}
-	tree := recurseTree(&root, cardLookup)
-	return recurseTreeCountCards(tree)
+	result := make(map[int]int)
+	for _, v := range cardLookup {
+		root := node{parent: nil, data: v}
+		tree := recurseTree(&root, cardLookup)
+		originalCardMapCount := recurseTreeCountCards(tree)
+		for id, count := range originalCardMapCount {
+			_, ok := result[id]
+			if ok {
+				result[id] = result[id] + count
+			} else {
+				result[id] = count
+			}
+		}
+	}
+
+	return result
 }
 
 func createCardLookup(cards []scratchcard) map[int]scratchcard {
