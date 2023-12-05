@@ -5,6 +5,7 @@ import (
 
 	"github.com/tomaskul/advent-of-code-23/solutions/day01"
 	"github.com/tomaskul/advent-of-code-23/solutions/day02"
+	"github.com/tomaskul/advent-of-code-23/solutions/day04"
 )
 
 type Solution interface {
@@ -21,6 +22,8 @@ func NewSolutionRegistry(sessionCookie string) *SolutionRegistry {
 		registry: map[int]Solution{
 			1: &day01.Day01{SessionCookie: sessionCookie},
 			2: &day02.Day02{SessionCookie: sessionCookie},
+
+			4: &day04.Day04{SessionCookie: sessionCookie},
 		},
 	}
 }
