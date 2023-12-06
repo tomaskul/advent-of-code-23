@@ -49,7 +49,7 @@ func Test_parseMap(t *testing.T) {
 	}
 }
 
-func Test_parseData(t *testing.T) {
+func Test_parseDataPt1(t *testing.T) {
 	tests := []struct {
 		name     string
 		input    []string
@@ -82,7 +82,7 @@ func Test_parseData(t *testing.T) {
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := parseData(tt.input)
+			actual := parseDataPt1(tt.input)
 			if !reflect.DeepEqual(tt.expected.seeds, actual.seeds) {
 				t.Errorf("expected: %+v, got: %+v", tt.expected, actual)
 			}

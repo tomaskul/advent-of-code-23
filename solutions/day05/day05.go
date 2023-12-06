@@ -13,8 +13,9 @@ type Day05 struct {
 }
 
 type data struct {
-	seeds []int
-	paths []lookup
+	seeds      []int
+	seedRanges idRangeDef
+	paths      []lookup
 }
 
 type lookup map[int]idRangeDef
@@ -57,12 +58,12 @@ func (s *Day05) getData() {
 func (s *Day05) PrintPart1() {
 	s.getData()
 
-	result := traverse(parseData(s.rows))
+	result := traverse(parseDataPt1(s.rows))
 
 	fmt.Println(util.Min(result))
 }
 
-func parseData(rows []string) data {
+func parseDataPt1(rows []string) data {
 	result := data{
 		seeds: util.ToInts(strings.Split(strings.TrimPrefix(rows[0], "seeds: "), " ")),
 		paths: make([]lookup, 0),
@@ -121,4 +122,28 @@ func traverse(data data) []int {
 
 func (s *Day05) PrintPart2() {
 	s.getData()
+}
+
+func parseDataPt2(rows []string) data {
+	result := data{
+		//seeds: util.ToInts(strings.Split(strings.TrimPrefix(rows[0], "seeds: "), " ")),
+		paths: make([]lookup, 0),
+	}
+
+	for i := 3; i < len(rows); i++ {
+		nextIndex, pathMap := parseMap(rows[i:])
+		if len(pathMap) == 0 {
+			break
+		}
+
+		result.paths = append(result.paths, pathMap)
+		if nextIndex == 0 || nextIndex == -1 {
+			fmt.Printf("debug: hello something happened!")
+			break
+		} else {
+			i = nextIndex + i + 1
+		}
+	}
+
+	return result
 }
