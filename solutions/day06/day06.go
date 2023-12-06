@@ -2,6 +2,7 @@ package day06
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/tomaskul/advent-of-code-23/util"
@@ -62,4 +63,13 @@ func parseData(input []string) []race {
 }
 
 func (s *Day06) PrintPart2() {
+	time, _ := strconv.Atoi(strings.Join(util.ExcludeEmptyEntries(strings.Split(strings.TrimPrefix(s.rows[0], "Time: "), " ")), ""))
+	distance, _ := strconv.Atoi(strings.Join(util.ExcludeEmptyEntries(strings.Split(strings.TrimPrefix(s.rows[1], "Distance: "), " ")), ""))
+
+	race := race{
+		timeMs:     time,
+		distanceMm: distance,
+	}
+
+	fmt.Println(race.noOptionsToBeat())
 }
