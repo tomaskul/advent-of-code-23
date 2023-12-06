@@ -68,7 +68,7 @@ func GetCachedRows(url, fileName, fileExt, sessionCookie string) ([]string, erro
 			return []string{}, err
 		}
 	} else {
-		fmt.Printf("getting data from local cache...\n")
+		fmt.Println("getting data from local cache...")
 	}
 
 	rows := strings.Split(string(data), "\n")

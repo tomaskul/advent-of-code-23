@@ -20,9 +20,9 @@ func main() {
 		os.Exit(-1)
 	}
 
-	registry := s.NewSolutionRegistry(sessionCookie)
+	registry := s.NewSolutionRegistry()
 
-	solution, err := registry.Get(day)
+	solution, err := registry.Get(sessionCookie, day)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)

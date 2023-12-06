@@ -13,3 +13,13 @@ func ToInts(input []string) []int {
 	}
 	return result
 }
+
+func ExcludeEmptyEntries(input []string) []string {
+	result := make([]string, 0)
+	for _, v := range input {
+		if v != "" {
+			result = append(result, v)
+		}
+	}
+	return result
+}
