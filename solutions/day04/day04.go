@@ -9,8 +9,14 @@ import (
 )
 
 type Day04 struct {
-	SessionCookie string
-	rows          []string
+	rows []string
+}
+
+func NewDay04Solution(sessionCookie string) *Day04 {
+	rows, _ := util.GetCachedRows("https://adventofcode.com/2023/day/4/input", "4", ".txt", sessionCookie)
+	return &Day04{
+		rows: rows,
+	}
 }
 
 type scratchcard struct {
@@ -58,15 +64,7 @@ func (c *scratchcard) countMatches() int {
 	return result
 }
 
-func (s *Day04) getData() {
-	if s.rows == nil {
-		s.rows, _ = util.GetCachedRows("https://adventofcode.com/2023/day/4/input", "4", ".txt", s.SessionCookie)
-	}
-}
-
 func (s *Day04) PrintPart1() {
-	s.getData()
-
 	fmt.Println(util.Sum(evaluateScratchcards(parseInputData(s.rows))))
 }
 
@@ -109,8 +107,6 @@ func getIntValues(input []string) []int {
 }
 
 func (s *Day04) PrintPart2() {
-	s.getData()
-
 	fmt.Println("PS. A pretty slow implementation, give it time.")
 	cardMap := traverseCards(parseInputData(s.rows))
 	total := 0

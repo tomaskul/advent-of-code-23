@@ -21,11 +21,11 @@ type SolutionRegistry struct {
 func NewSolutionRegistry(sessionCookie string) *SolutionRegistry {
 	return &SolutionRegistry{
 		registry: map[int]Solution{
-			1: &day01.Day01{SessionCookie: sessionCookie},
-			2: &day02.Day02{SessionCookie: sessionCookie},
+			1: day01.NewDay01Solution(sessionCookie),
+			2: day02.NewDay02Solution(sessionCookie),
 
-			4: &day04.Day04{SessionCookie: sessionCookie},
-			5: &day05.Day05{SessionCookie: sessionCookie},
+			4: day04.NewDay04Solution(sessionCookie),
+			5: day05.NewDay05Solution(sessionCookie),
 		},
 	}
 }
