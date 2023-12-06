@@ -2,19 +2,26 @@ package day05
 
 import (
 	"fmt"
+	"strconv"
 	"strings"
 
 	"github.com/tomaskul/advent-of-code-23/util"
 )
 
 type Day05 struct {
-	SessionCookie string
-	rows          []string
+	rows []string
+}
+
+func NewDay05Solution(sessionCookie string) *Day05 {
+	rows, _ := util.GetCachedRows("https://adventofcode.com/2023/day/5/input", "5", ".txt", sessionCookie)
+	return &Day05{
+		rows: rows,
+	}
 }
 
 type data struct {
 	seeds      []int
-	seedRanges idRangeDef
+	seedRanges []idRangeDef
 	paths      []lookup
 }
 
@@ -49,15 +56,7 @@ func (l lookup) getDestinationId(sourceId int) int {
 	return result
 }
 
-func (s *Day05) getData() {
-	if s.rows == nil {
-		s.rows, _ = util.GetCachedRows("https://adventofcode.com/2023/day/5/input", "5", ".txt", s.SessionCookie)
-	}
-}
-
 func (s *Day05) PrintPart1() {
-	s.getData()
-
 	result := traverse(parseDataPt1(s.rows))
 
 	fmt.Println(util.Min(result))
@@ -121,13 +120,20 @@ func traverse(data data) []int {
 }
 
 func (s *Day05) PrintPart2() {
-	s.getData()
+	//result := traversePt2(parseDataPt2(s.rows))
+
+	result := parseDataPt2(s.rows)
+	for i, rng := range result.seedRanges {
+		diff := rng.srcRangeStart - rng.rangeLen
+		fmt.Printf("rng[%d] diff: %d\n", i, diff)
+	}
+	//fmt.Println(util.Min(result))
 }
 
 func parseDataPt2(rows []string) data {
 	result := data{
-		//seeds: util.ToInts(strings.Split(strings.TrimPrefix(rows[0], "seeds: "), " ")),
-		paths: make([]lookup, 0),
+		seedRanges: seedsToSeedRanges(rows[0]),
+		paths:      make([]lookup, 0),
 	}
 
 	for i := 3; i < len(rows); i++ {
@@ -147,3 +153,37 @@ func parseDataPt2(rows []string) data {
 
 	return result
 }
+
+func seedsToSeedRanges(seedData string) []idRangeDef {
+	seedStringTokens := strings.Split(strings.TrimPrefix(seedData, "seeds: "), " ")
+	result := make([]idRangeDef, 0)
+	for i := 0; i < len(seedStringTokens); i += 2 {
+		start, err := strconv.Atoi(seedStringTokens[i])
+		if err != nil {
+			fmt.Printf("unexpected err converting seed id range start: %v", err)
+		}
+		len, err := strconv.Atoi(seedStringTokens[i+1])
+		if err != nil {
+			fmt.Printf("unexpected err converting seed id range len: %v", err)
+		}
+		result = append(result, idRangeDef{
+			srcRangeStart: start,
+			rangeLen:      len,
+		})
+	}
+	return result
+}
+
+// func traversePt2(data data) []int {
+// 	result := make([]int, 0)
+// 	for idx, seedIdRange := range data.seedRanges {
+
+// 		// srcId := seedId
+// 		// for _, path := range data.paths {
+// 		// 	srcId = path.getDestinationId(srcId)
+// 		// }
+// 		// result[idx] = srcId
+
+// 	}
+// 	return result
+// }
