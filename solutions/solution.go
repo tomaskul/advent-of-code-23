@@ -6,6 +6,7 @@ import (
 	"github.com/tomaskul/advent-of-code-23/solutions/day01"
 	"github.com/tomaskul/advent-of-code-23/solutions/day02"
 	"github.com/tomaskul/advent-of-code-23/solutions/day04"
+	"github.com/tomaskul/advent-of-code-23/solutions/day05"
 )
 
 type Solution interface {
@@ -24,6 +25,7 @@ func NewSolutionRegistry(sessionCookie string) *SolutionRegistry {
 			2: &day02.Day02{SessionCookie: sessionCookie},
 
 			4: &day04.Day04{SessionCookie: sessionCookie},
+			5: &day05.Day05{SessionCookie: sessionCookie},
 		},
 	}
 }
