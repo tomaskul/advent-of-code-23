@@ -15,6 +15,15 @@ type Day07 struct {
 
 var cardFaces = []rune{'A', 'K', 'Q', 'J', 'T', '9', '8', '7', '6', '5', '4', '3', '2'}
 
+// const (
+// 	HighCardType = iota
+// 	OnePairType
+// 	TwoPairType
+// 	ThreeOfKindType
+// 	FourOfKindType
+// 	FiveOfKindType
+// )
+
 type item struct {
 	hand card
 	bid  int
@@ -43,8 +52,10 @@ func newCard(input string) card {
 
 func (c card) getType() int {
 	if c.isFiveOfAKind() {
-		return 5
+		return 6
 	} else if c.isFourOfAKind() {
+		return 5
+	} else if c.isFullHouse() {
 		return 4
 	} else if c.isThreeOfAKind() {
 		return 3
@@ -126,8 +137,7 @@ func NewDay07Solution(sessionCookie string) *Day07 {
 }
 
 func (s *Day07) PrintPart1() {
-	items := parsePt1(s.rows)
-	fmt.Println(calculateWinnings(items))
+	fmt.Println(calculateWinnings(sortPt1(parsePt1(s.rows))))
 }
 
 func parsePt1(rows []string) []item {
@@ -152,6 +162,7 @@ func sortPt1(items []item) []item {
 			iValue, jValue := -1, -1
 			for k := 0; k < 5; k++ {
 				for idx, face := range cardFaces {
+					//cardFaces are in descending value.
 					if items[i].hand.value[k] == byte(face) {
 						iValue = len(cardFaces) - idx
 					}
