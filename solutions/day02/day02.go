@@ -9,8 +9,13 @@ import (
 )
 
 type Day02 struct {
-	SessionCookie string
-	rows          []string
+	rows []string
+}
+
+func NewDay02Solution(sessionCookie string) *Day02 {
+	return &Day02{
+		rows: util.GetRows("https://adventofcode.com/2023/day/2/input", sessionCookie),
+	}
 }
 
 type rgb struct {
@@ -25,21 +30,11 @@ type game struct {
 	sets set
 }
 
-func (s *Day02) getData() {
-	if s.rows == nil {
-		s.rows = util.GetRows("https://adventofcode.com/2023/day/2/input", s.SessionCookie)
-	}
-}
-
 func (s *Day02) PrintPart1() {
-	s.getData()
-
 	fmt.Println(util.Sum(countPossibleGames(rgb{r: 12, g: 13, b: 14}, parseInputData(s.rows))))
 }
 
 func (s *Day02) PrintPart2() {
-	s.getData()
-
 	fmt.Println(util.Sum(powers(parseInputData(s.rows))))
 }
 

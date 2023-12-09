@@ -14,21 +14,18 @@ type Day03 struct {
 	rows          []string
 }
 
-func (s *Day03) getData() {
-	if s.rows == nil {
-		s.rows = util.GetRows("https://adventofcode.com/2023/day/3/input", s.SessionCookie)
+func NewDay03Solution(sessionCookie string) *Day03 {
+	rows, _ := util.GetCachedRows("https://adventofcode.com/2023/day/3/input", "5", ".txt", sessionCookie)
+	return &Day03{
+		rows: rows,
 	}
 }
 
 func (s *Day03) PrintPart1() {
-	s.getData()
-
 	fmt.Println(util.Sum(numbersWithAdjacentSymbols(s.rows)))
 }
 
 func (s *Day03) PrintPart2() {
-	s.getData()
-
 	fmt.Println("WIP")
 }
 

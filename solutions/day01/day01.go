@@ -10,8 +10,7 @@ import (
 )
 
 type Day01 struct {
-	SessionCookie string
-	rows          []string
+	rows []string
 }
 
 type matches []string
@@ -19,20 +18,18 @@ type matches []string
 func (m matches) First() string { return m[0] }
 func (m matches) Last() string  { return m[len(m)-1] }
 
-func (s *Day01) getData() {
-	if s.rows == nil {
-		s.rows = util.GetRows("https://adventofcode.com/2023/day/1/input", s.SessionCookie)
+func NewDay01Solution(sessionCookie string) *Day01 {
+	return &Day01{
+		rows: util.GetRows("https://adventofcode.com/2023/day/1/input", sessionCookie),
 	}
 }
 
 func (s *Day01) PrintPart1() {
-	s.getData()
 	calibrationValues := s.getAllCalibrationValues(s.rows)
 	fmt.Printf("Sum of all of the calibration values: %d\n", util.Sum(calibrationValues))
 }
 
 func (s *Day01) PrintPart2() {
-	s.getData()
 	calibrationValues := s.getRealCalibrationValues(s.rows)
 	fmt.Printf("Sum of all of the REAL calibration values: %d\n", util.Sum(calibrationValues))
 }

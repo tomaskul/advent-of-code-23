@@ -1,14 +1,17 @@
 package util
 
-import "testing"
+import (
+	"fmt"
+	"testing"
+)
 
 const SessionCookie = ""
 
 func Test_GetRows_NoEmptyRows(t *testing.T) {
-	t.Skip("Specify sessionCookie & update test cases for 2023.")
+	t.Skip("Specify sessionCookie.")
 	testCases := map[string]string{
-		"Day 4": "https://adventofcode.com/2022/day/4/input",
-		"Day 5": "https://adventofcode.com/2022/day/4/input",
+		"Day 4": "https://adventofcode.com/2023/day/4/input",
+		"Day 5": "https://adventofcode.com/2023/day/5/input",
 	}
 
 	for name, url := range testCases {
@@ -21,4 +24,16 @@ func Test_GetRows_NoEmptyRows(t *testing.T) {
 			}
 		})
 	}
+}
+
+func Test_GetRowsV2(t *testing.T) {
+	t.Skip("Specify sessionCookie.")
+
+	t.Run("manual test", func(t *testing.T) {
+		rows, err := GetCachedRows("https://adventofcode.com/2023/day/3/input", "3", ".txt", "")
+		if err != nil {
+			t.Errorf("unexpected error: %v", err)
+		}
+		fmt.Printf("rows[:3]: %v\n", rows[:3])
+	})
 }
