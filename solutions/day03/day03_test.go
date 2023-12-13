@@ -212,13 +212,24 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 			expectedSum: 19,
 		},
 		{
-			name: "single match - 2nd item subset",
+			name: "actual - item 1 match - 2nd item subset",
 			input: []string{
-				"45..*4.",
-				".......",
+				"..............",
+				"+81.........8.",
+				"..............",
 			},
-			expectedAdj: []int{4},
-			expectedSum: 4,
+			expectedAdj: []int{81},
+			expectedSum: 81,
+		},
+		{
+			name: "actual - item 2 match - 2nd item subset",
+			input: []string{
+				"..............",
+				".206.......*6.",
+				"..............",
+			},
+			expectedAdj: []int{6},
+			expectedSum: 6,
 		},
 	}
 

@@ -56,10 +56,10 @@ func numbersWithAdjacentSymbols(input []string) []int {
 			if rowBelow != "" {
 				below = rowBelow[afterIndex:]
 			}
-			curr := row[afterIndex:]
+			subjectRow := row[afterIndex:]
 
-			var isAdj bool
-			isAdj, afterIndex = isAdjacentToSymbol(number, above, curr, below)
+			isAdj, newAfterIndex := isAdjacentToSymbol(number, above, subjectRow, below)
+			afterIndex += newAfterIndex
 			if isAdj {
 				value, _ := strconv.Atoi(number)
 				result = append(result, value)
@@ -75,22 +75,17 @@ func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, i
 	subjectIndex := strings.Index(subjectRow, subject)
 	subjectEndIndex := subjectIndex + len(subject)
 
-	// Check left side, keep track of the index for diagonal checks.
 	leftIndex := subjectIndex
 	if subjectIndex-1 > -1 {
 		leftIndex -= 1
-		if nonFillerRegex.Match([]byte{subjectRow[leftIndex]}) {
-			return true, subjectEndIndex
-		}
 	}
-
-	// Check right side, keep track of the index for diagonal checks.
 	rightIndex := subjectEndIndex
 	if subjectEndIndex+1 <= len(subjectRow) {
-		if nonFillerRegex.Match([]byte{subjectRow[subjectEndIndex]}) {
-			return true, subjectEndIndex
-		}
 		rightIndex += 1
+	}
+
+	if nonFillerRegex.MatchString(subjectRow[leftIndex:rightIndex]) {
+		return true, subjectEndIndex
 	}
 
 	// Above, below + diagonal checks.
@@ -110,11 +105,10 @@ func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, i
 		}
 	}
 
-	// fmt.Printf("subject:%q\n", subject)
+	// fmt.Printf("subject:%q\ncurRow:%q\n", subject, subjectRow)
 	// fmt.Printf("above:  %v\n", aboveSearchSpace)
 	// fmt.Printf("current:%v\n", subjectRow[leftIndex:rightIndex])
 	// fmt.Printf("below:  %v\n\n", belowSearchSpace)
-	// fmt.Printf("current:%v\n\n\n", subjectRow)
 
 	return false, subjectEndIndex
 }
