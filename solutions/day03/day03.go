@@ -15,7 +15,7 @@ type Day03 struct {
 }
 
 func NewDay03Solution(sessionCookie string) *Day03 {
-	rows, _ := util.GetCachedRows("https://adventofcode.com/2023/day/3/input", "5", ".txt", sessionCookie)
+	rows, _ := util.GetCachedRows("https://adventofcode.com/2023/day/3/input", "3", ".txt", sessionCookie)
 	return &Day03{
 		rows: rows,
 	}
@@ -30,7 +30,7 @@ func (s *Day03) PrintPart2() {
 }
 
 func numbersWithAdjacentSymbols(input []string) []int {
-	numMatch, _ := regexp.Compile("\\d{1,7}")
+	numMatch, _ := regexp.Compile("\\d+")
 	result := make([]int, 0)
 
 	for i, row := range input {
@@ -47,83 +47,74 @@ func numbersWithAdjacentSymbols(input []string) []int {
 			rowBelow = input[i+1]
 		}
 
-		isAdj, afterIndex := false, 0
+		var afterIndex int
 		for _, number := range numbersInRow {
 			above, below := "", ""
 			if rowAbove != "" {
-				above = fmt.Sprintf("%s", rowAbove[afterIndex:])
+				above = rowAbove[afterIndex:]
 			}
 			if rowBelow != "" {
-				below = fmt.Sprintf("%s", rowBelow[afterIndex:])
+				below = rowBelow[afterIndex:]
 			}
-			curr := fmt.Sprintf("%s", row[afterIndex:])
+			curr := row[afterIndex:]
 
-			if i < 3 {
-				fmt.Printf("number: %q\n", number)
-				fmt.Printf("above:  %v\n", above)
-				fmt.Printf("current:%v\n", curr)
-				fmt.Printf("below:  %v\n\n\n", below)
-			}
+			var isAdj bool
 			isAdj, afterIndex = isAdjacentToSymbol(number, above, curr, below)
 			if isAdj {
 				value, _ := strconv.Atoi(number)
 				result = append(result, value)
 			}
 		}
-
-		//fmt.Printf("rowIndex: %d, map: %v\n", i, hasDuplicates(numbersInRow))
 	}
-
 	return result
 }
 
 func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, int) {
-	nonFillerRegex, _ := regexp.Compile("[^0-9.]")
-	subjectIndex := strings.Index(subjectRow, subject)
-	subjectLength := len(subject)
+	nonFillerRegex, _ := regexp.Compile("[^.0-9]")
 
+	subjectIndex := strings.Index(subjectRow, subject)
+	subjectEndIndex := subjectIndex + len(subject)
+
+	// Check left side, keep track of the index for diagonal checks.
 	leftIndex := subjectIndex
 	if subjectIndex-1 > -1 {
-		leftIndex = subjectIndex - 1
+		leftIndex -= 1
 		if nonFillerRegex.Match([]byte{subjectRow[leftIndex]}) {
-			return true, subjectIndex + len(subject)
+			return true, subjectEndIndex
 		}
 	}
 
-	rightIndex := subjectIndex + subjectLength - 1
-	if subjectIndex+subjectLength < len(subjectRow) {
-		if nonFillerRegex.Match([]byte{subjectRow[subjectIndex+subjectLength]}) {
-			return true, subjectIndex + len(subject)
+	// Check right side, keep track of the index for diagonal checks.
+	rightIndex := subjectEndIndex
+	if subjectEndIndex+1 <= len(subjectRow) {
+		if nonFillerRegex.Match([]byte{subjectRow[subjectEndIndex]}) {
+			return true, subjectEndIndex
 		}
-		rightIndex = subjectIndex + subjectLength + 1
+		rightIndex += 1
 	}
+
+	// Above, below + diagonal checks.
+	aboveSearchSpace, belowSearchSpace := "", ""
 
 	if rowAbove != "" {
-		searchSpace := rowAbove[leftIndex:rightIndex]
-		if nonFillerRegex.Match([]byte(searchSpace)) {
-			return true, subjectIndex + len(subject)
+		aboveSearchSpace = rowAbove[leftIndex:rightIndex]
+		if nonFillerRegex.MatchString(aboveSearchSpace) {
+			return true, subjectEndIndex
 		}
 	}
 
 	if rowBelow != "" {
-		searchSpace := rowBelow[leftIndex:rightIndex]
-		if nonFillerRegex.Match([]byte(searchSpace)) {
-			return true, subjectIndex + len(subject)
+		belowSearchSpace = rowBelow[leftIndex:rightIndex]
+		if nonFillerRegex.MatchString(belowSearchSpace) {
+			return true, subjectEndIndex
 		}
 	}
 
-	return false, subjectIndex + len(subject)
-}
+	// fmt.Printf("subject:%q\n", subject)
+	// fmt.Printf("above:  %v\n", aboveSearchSpace)
+	// fmt.Printf("current:%v\n", subjectRow[leftIndex:rightIndex])
+	// fmt.Printf("below:  %v\n\n", belowSearchSpace)
+	// fmt.Printf("current:%v\n\n\n", subjectRow)
 
-func hasDuplicates(values []string) map[string]int {
-	result := make(map[string]int)
-	for _, v := range values {
-		_, ok := result[v]
-		if ok {
-			result[v] = result[v] + 1
-		} else {
-			result[v] = 1
-		}
-	}
-	return result
+	return false, subjectEndIndex
 }

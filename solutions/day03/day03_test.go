@@ -1,10 +1,36 @@
 package day03
 
 import (
+	"reflect"
+	"regexp"
 	"testing"
 
 	"github.com/tomaskul/advent-of-code-23/util"
 )
+
+func Test_regex(t *testing.T) {
+	tests := []struct {
+		name            string
+		input           string
+		expectedMatches []string
+	}{
+		{
+			name:            "actual - weird 206",
+			input:           "886.......206..............*6.......595=.....*.85........*..............................286..$...23.....436.................................",
+			expectedMatches: []string{"886", "206", "6", "595", "85", "286", "23", "436"},
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+			numMatch, _ := regexp.Compile("\\d+")
+			actual := numMatch.FindAllString(tc.input, -1)
+			if !reflect.DeepEqual(tc.expectedMatches, actual) {
+				t.Errorf("expected: %v, got: %v", tc.expectedMatches, actual)
+			}
+		})
+	}
+}
 
 func Test_isAdjacentToSymbol(t *testing.T) {
 	type args struct {
@@ -45,6 +71,16 @@ func Test_isAdjacentToSymbol(t *testing.T) {
 				rowAbove:   "......#...",
 				subjectRow: "617*......",
 				rowBelow:   ".....+.58.",
+			},
+			expected: true,
+		},
+		{
+			name: "adjacent right - 58",
+			arguments: args{
+				subject:    "58",
+				rowAbove:   "617*......",
+				subjectRow: ".....+.58*",
+				rowBelow:   "..592.....",
 			},
 			expected: true,
 		},
@@ -116,6 +152,7 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 	tests := []struct {
 		name        string
 		input       []string
+		expectedAdj []int
 		expectedSum int
 	}{
 		{
@@ -132,6 +169,7 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 				"...$.*....",
 				".664.598..",
 			},
+			expectedAdj: []int{467, 35, 633, 617, 592, 755, 664, 598},
 			expectedSum: 4361,
 		},
 		{
@@ -141,39 +179,60 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 				".33.....33..",
 				"............",
 			},
+			expectedAdj: []int{33},
 			expectedSum: 33,
+		},
+		{
+			name: "single digit",
+			input: []string{
+				"......",
+				"..8...",
+				"-*....",
+			},
+			expectedAdj: []int{8},
+			expectedSum: 8,
+		},
+		{
+			name: "multiple matches - same row",
+			input: []string{
+				"#...#...#...",
+				"5....5.7....",
+			},
+			expectedAdj: []int{5, 5, 7},
+			expectedSum: 17,
+		},
+		{
+			name: "multiple matches - same row",
+			input: []string{
+				"#...#...#...",
+				"5....5.7...=",
+				"...........2",
+			},
+			expectedAdj: []int{5, 5, 7, 2},
+			expectedSum: 19,
+		},
+		{
+			name: "single match - 2nd item subset",
+			input: []string{
+				"45..*4.",
+				".......",
+			},
+			expectedAdj: []int{4},
+			expectedSum: 4,
 		},
 	}
 
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual := util.Sum(numbersWithAdjacentSymbols(tt.input))
-			if tt.expectedSum != actual {
-				t.Errorf("expected: %v, got: %v", tt.expectedSum, actual)
+			actualAdj := numbersWithAdjacentSymbols(tt.input)
+			actualSum := util.Sum(actualAdj)
+
+			if !reflect.DeepEqual(tt.expectedAdj, actualAdj) {
+				t.Errorf("expected: %v, got: %v", tt.expectedAdj, actualAdj)
+			}
+			if tt.expectedSum != actualSum {
+				t.Errorf("expected: %v, got: %v", tt.expectedSum, actualSum)
 			}
 		})
 	}
 }
-
-// func Test_parseInputData(t *testing.T) {
-// 	tests := []struct {
-// 		name     string
-// 		input    []string
-// 		expected any
-// 	}{
-// 		{
-// 			name:     "sample",
-// 			input:    []string{},
-// 			expected: 0,
-// 		},
-// 	}
-
-// 	for _, tt := range tests {
-// 		t.Run(tt.name, func(t *testing.T) {
-// 			actual := parseInputData(tt.input)
-// 			if !reflect.DeepEqual(tt.expected, actual) {
-// 				t.Errorf("expected: %v, got: %v", tt.expected, actual)
-// 			}
-// 		})
-// 	}
-// }
