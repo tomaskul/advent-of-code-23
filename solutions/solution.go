@@ -9,6 +9,7 @@ import (
 	"github.com/tomaskul/advent-of-code-23/solutions/day05"
 	"github.com/tomaskul/advent-of-code-23/solutions/day06"
 	"github.com/tomaskul/advent-of-code-23/solutions/day07"
+	"github.com/tomaskul/advent-of-code-23/solutions/day08"
 )
 
 type Solution interface {
@@ -30,6 +31,7 @@ func NewSolutionRegistry() *SolutionRegistry {
 			5: func(s string) Solution { return day05.NewDay05Solution(s) },
 			6: func(s string) Solution { return day06.NewDay06Solution(s) },
 			7: func(s string) Solution { return day07.NewDay07Solution(s) },
+			8: func(s string) Solution { return day08.NewDay08Solution(s) },
 		},
 	}
 }
