@@ -25,10 +25,6 @@ func (s *Day03) PrintPart1() {
 	fmt.Println(util.Sum(numbersWithAdjacentSymbols(s.rows)))
 }
 
-func (s *Day03) PrintPart2() {
-	fmt.Println("WIP")
-}
-
 func numbersWithAdjacentSymbols(input []string) []int {
 	numMatch, _ := regexp.Compile("\\d+")
 	result := make([]int, 0)
@@ -111,4 +107,17 @@ func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, i
 	// fmt.Printf("below:  %v\n\n", belowSearchSpace)
 
 	return false, subjectEndIndex
+}
+
+func (s *Day03) PrintPart2() {
+	fmt.Println("WIP")
+	fmt.Println(util.Sum(numbersAdjacentToGears(s.rows)))
+}
+
+func numbersAdjacentToGears(input []string) []int {
+	// gearMatch, _ := regexp.Compile("\\*")
+	// numMatch, _ := regexp.Compile("\\d+")
+	result := make([]int, 0)
+
+	return result
 }
