@@ -42,4 +42,9 @@ func calculateLoad(b *board) int {
 }
 
 func (s *Day14) PrintPart2() {
+	// After certain number of iterations a consistent pattern emerges and repeats into infinity.
+	// just need to find the right point in the small pattern at 1000000000th iteration.
+	board := newBoard(s.rows)
+	board.SpinCycle(1000)
+	fmt.Println(calculateLoad(board))
 }
