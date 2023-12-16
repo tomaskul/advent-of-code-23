@@ -19,15 +19,10 @@ func NewDay15Solution(sessionCookie string) *Day15 {
 }
 
 func (s *Day15) PrintPart1() {
-	tokens := strings.Split(s.rows[0], ",")
-
-	//strings.Split("rn=1,cm-,qp=3,cm=2,qp-,pc=4,ot=9,ab=5,pc-,pc=6,ot=7", ",")
-	out := hashSumOfTokens(tokens)
-	fmt.Printf("%d\n", out)
+	fmt.Println(hashSumOfTokens(strings.Split(s.rows[0], ",")))
 }
 
 func hashSumOfTokens(values []string) int {
-	//
 	hashValues := make([]int, 0)
 	for _, v := range values {
 		hashValues = append(hashValues, hash(v))
