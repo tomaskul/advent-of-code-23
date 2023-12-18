@@ -27,6 +27,8 @@ func (s *Day03) PrintPart1() {
 
 func numbersWithAdjacentSymbols(input []string) []int {
 	numMatch, _ := regexp.Compile("\\d+")
+	nonFillerRegex, _ := regexp.Compile("[^.0-9]")
+
 	result := make([]int, 0)
 
 	for i, row := range input {
@@ -54,7 +56,7 @@ func numbersWithAdjacentSymbols(input []string) []int {
 			}
 			subjectRow := row[afterIndex:]
 
-			isAdj, newAfterIndex := isAdjacentToSymbol(number, above, subjectRow, below)
+			isAdj, newAfterIndex := isAdjacentToSymbol(number, above, subjectRow, below, nonFillerRegex)
 			afterIndex += newAfterIndex
 			if isAdj {
 				value, _ := strconv.Atoi(number)
@@ -65,9 +67,7 @@ func numbersWithAdjacentSymbols(input []string) []int {
 	return result
 }
 
-func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, int) {
-	nonFillerRegex, _ := regexp.Compile("[^.0-9]")
-
+func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string, symbolRegex *regexp.Regexp) (bool, int) {
 	subjectIndex := strings.Index(subjectRow, subject)
 	subjectEndIndex := subjectIndex + len(subject)
 
@@ -80,7 +80,7 @@ func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, i
 		rightIndex += 1
 	}
 
-	if nonFillerRegex.MatchString(subjectRow[leftIndex:rightIndex]) {
+	if symbolRegex.MatchString(subjectRow[leftIndex:rightIndex]) {
 		return true, subjectEndIndex
 	}
 
@@ -89,14 +89,14 @@ func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string) (bool, i
 
 	if rowAbove != "" {
 		aboveSearchSpace = rowAbove[leftIndex:rightIndex]
-		if nonFillerRegex.MatchString(aboveSearchSpace) {
+		if symbolRegex.MatchString(aboveSearchSpace) {
 			return true, subjectEndIndex
 		}
 	}
 
 	if rowBelow != "" {
 		belowSearchSpace = rowBelow[leftIndex:rightIndex]
-		if nonFillerRegex.MatchString(belowSearchSpace) {
+		if symbolRegex.MatchString(belowSearchSpace) {
 			return true, subjectEndIndex
 		}
 	}
