@@ -1,19 +1,28 @@
 package util
 
-func Sum(input []int) int {
+func Sum(values []int) int {
 	total := 0
-	for _, value := range input {
+	for _, value := range values {
 		total += value
 	}
 	return total
 }
 
-func Min(input []int) int {
-	min := input[0]
-	for _, v := range input {
+func Min(values []int) int {
+	min := values[0]
+	for _, v := range values {
 		if v < min {
 			min = v
 		}
 	}
 	return min
+}
+
+func All(values []int, condition func(int) bool) bool {
+	for _, v := range values {
+		if !condition(v) {
+			return false
+		}
+	}
+	return true
 }
