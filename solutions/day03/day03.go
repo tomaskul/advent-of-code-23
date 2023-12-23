@@ -56,7 +56,7 @@ func numbersWithAdjacentSymbols(input []string) []int {
 			}
 			subjectRow := row[afterIndex:]
 
-			isAdj, newAfterIndex := isAdjacentToSymbol(number, above, subjectRow, below, nonFillerRegex)
+			isAdj, newAfterIndex := isAdjacentToSymbol(number, above, subjectRow, below, nonFillerRegex, 1)
 			afterIndex += newAfterIndex
 			if isAdj {
 				value, _ := strconv.Atoi(number)
@@ -67,18 +67,11 @@ func numbersWithAdjacentSymbols(input []string) []int {
 	return result
 }
 
-func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string, symbolRegex *regexp.Regexp) (bool, int) {
+func isAdjacentToSymbol(subject, rowAbove, subjectRow, rowBelow string, symbolRegex *regexp.Regexp, maxHorizontalRange int) (bool, int) {
 	subjectIndex := strings.Index(subjectRow, subject)
 	subjectEndIndex := subjectIndex + len(subject)
 
-	leftIndex := subjectIndex
-	if subjectIndex-1 > -1 {
-		leftIndex -= 1
-	}
-	rightIndex := subjectEndIndex
-	if subjectEndIndex+1 <= len(subjectRow) {
-		rightIndex += 1
-	}
+	leftIndex, rightIndex := util.BoundaryIndices(subjectIndex, subjectEndIndex, maxHorizontalRange, subjectIndex-1, len(subjectRow)) //subjectEndIndex+2
 
 	if symbolRegex.MatchString(subjectRow[leftIndex:rightIndex]) {
 		return true, subjectEndIndex
@@ -115,8 +108,9 @@ func (s *Day03) PrintPart2() {
 }
 
 func numbersAdjacentToGears(input []string) []int {
-	// gearMatch, _ := regexp.Compile("\\*")
-	// numMatch, _ := regexp.Compile("\\d+")
+	//gearMatch, _ := regexp.Compile("\\*")
+	//numMatch, _ := regexp.Compile("\\d+")
+
 	result := make([]int, 0)
 
 	return result

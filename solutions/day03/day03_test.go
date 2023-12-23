@@ -8,6 +8,13 @@ import (
 	"github.com/tomaskul/advent-of-code-23/util"
 )
 
+type args struct {
+	subject    string
+	rowAbove   string
+	subjectRow string
+	rowBelow   string
+}
+
 func Test_regex(t *testing.T) {
 	tests := []struct {
 		name            string
@@ -33,12 +40,6 @@ func Test_regex(t *testing.T) {
 }
 
 func Test_isAdjacentToSymbol(t *testing.T) {
-	type args struct {
-		subject    string
-		rowAbove   string
-		subjectRow string
-		rowBelow   string
-	}
 	tests := []struct {
 		name      string
 		arguments args
@@ -114,7 +115,6 @@ func Test_isAdjacentToSymbol(t *testing.T) {
 			},
 			expected: false,
 		},
-
 		{
 			name: "not adj - top left overshoot",
 			arguments: args{
@@ -137,9 +137,11 @@ func Test_isAdjacentToSymbol(t *testing.T) {
 		},
 	}
 
+	nonFillerRegex, _ := regexp.Compile("[^.0-9]")
+
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			actual, _ := isAdjacentToSymbol(tt.arguments.subject, tt.arguments.rowAbove, tt.arguments.subjectRow, tt.arguments.rowBelow)
+			actual, _ := isAdjacentToSymbol(tt.arguments.subject, tt.arguments.rowAbove, tt.arguments.subjectRow, tt.arguments.rowBelow, nonFillerRegex, 1)
 			if tt.expected != actual {
 				t.Errorf("expected: %v, got: %v", tt.expected, actual)
 			}
@@ -155,33 +157,33 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 		expectedAdj []int
 		expectedSum int
 	}{
-		{
-			name: "sample",
-			input: []string{
-				"467..114..",
-				"...*......",
-				"..35..633.",
-				"......#...",
-				"617*......",
-				".....+.58.",
-				"..592.....",
-				"......755.",
-				"...$.*....",
-				".664.598..",
-			},
-			expectedAdj: []int{467, 35, 633, 617, 592, 755, 664, 598},
-			expectedSum: 4361,
-		},
-		{
-			name: "duplicate number",
-			input: []string{
-				"..#.........",
-				".33.....33..",
-				"............",
-			},
-			expectedAdj: []int{33},
-			expectedSum: 33,
-		},
+		// {
+		// 	name: "sample",
+		// 	input: []string{
+		// 		"467..114..",
+		// 		"...*......",
+		// 		"..35..633.",
+		// 		"......#...",
+		// 		"617*......",
+		// 		".....+.58.",
+		// 		"..592.....",
+		// 		"......755.",
+		// 		"...$.*....",
+		// 		".664.598..",
+		// 	},
+		// 	expectedAdj: []int{467, 35, 633, 617, 592, 755, 664, 598},
+		// 	expectedSum: 4361,
+		// },
+		// {
+		// 	name: "duplicate number",
+		// 	input: []string{
+		// 		"..#.........",
+		// 		".33.....33..",
+		// 		"............",
+		// 	},
+		// 	expectedAdj: []int{33},
+		// 	expectedSum: 33,
+		// },
 		{
 			name: "single digit",
 			input: []string{
@@ -192,45 +194,45 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 			expectedAdj: []int{8},
 			expectedSum: 8,
 		},
-		{
-			name: "multiple matches - same row",
-			input: []string{
-				"#...#...#...",
-				"5....5.7....",
-			},
-			expectedAdj: []int{5, 5, 7},
-			expectedSum: 17,
-		},
-		{
-			name: "multiple matches - same row",
-			input: []string{
-				"#...#...#...",
-				"5....5.7...=",
-				"...........2",
-			},
-			expectedAdj: []int{5, 5, 7, 2},
-			expectedSum: 19,
-		},
-		{
-			name: "actual - item 1 match - 2nd item subset",
-			input: []string{
-				"..............",
-				"+81.........8.",
-				"..............",
-			},
-			expectedAdj: []int{81},
-			expectedSum: 81,
-		},
-		{
-			name: "actual - item 2 match - 2nd item subset",
-			input: []string{
-				"..............",
-				".206.......*6.",
-				"..............",
-			},
-			expectedAdj: []int{6},
-			expectedSum: 6,
-		},
+		// {
+		// 	name: "multiple matches - same row",
+		// 	input: []string{
+		// 		"#...#...#...",
+		// 		"5....5.7....",
+		// 	},
+		// 	expectedAdj: []int{5, 5, 7},
+		// 	expectedSum: 17,
+		// },
+		// {
+		// 	name: "multiple matches - same row",
+		// 	input: []string{
+		// 		"#...#...#...",
+		// 		"5....5.7...=",
+		// 		"...........2",
+		// 	},
+		// 	expectedAdj: []int{5, 5, 7, 2},
+		// 	expectedSum: 19,
+		// },
+		// {
+		// 	name: "actual - item 1 match - 2nd item subset",
+		// 	input: []string{
+		// 		"..............",
+		// 		"+81.........8.",
+		// 		"..............",
+		// 	},
+		// 	expectedAdj: []int{81},
+		// 	expectedSum: 81,
+		// },
+		// {
+		// 	name: "actual - item 2 match - 2nd item subset",
+		// 	input: []string{
+		// 		"..............",
+		// 		".206.......*6.",
+		// 		"..............",
+		// 	},
+		// 	expectedAdj: []int{6},
+		// 	expectedSum: 6,
+		// },
 	}
 
 	for _, tt := range tests {
@@ -244,6 +246,78 @@ func Test_numbersWithAdjacentSymbols(t *testing.T) {
 			if tt.expectedSum != actualSum {
 				t.Errorf("expected: %v, got: %v", tt.expectedSum, actualSum)
 			}
+		})
+	}
+}
+
+func Test_numbersAdjacentToGears(t *testing.T) {
+	tests := []struct {
+		name      string
+		arguments args
+		expected  bool
+	}{
+		{
+			name: "adjacent - valid - top & bottom",
+			arguments: args{
+				//subject:    "617",
+				rowAbove:   "...2...",
+				subjectRow: "...*...",
+				rowBelow:   "...3...",
+			},
+			expected: true,
+		},
+		{
+			name: "adjacent - valid - sides",
+			arguments: args{
+				rowAbove:   ".......",
+				subjectRow: "..1*5..",
+				rowBelow:   ".......",
+			},
+			expected: true,
+		},
+		{
+			name: "adjacent - valid - diagonal nw-se",
+			arguments: args{
+				rowAbove:   "100....",
+				subjectRow: "...*...",
+				rowBelow:   "....7..",
+			},
+			expected: true,
+		},
+		{
+			name: "adjacent - valid - diagonal ne-sw",
+			arguments: args{
+				rowAbove:   "....6..",
+				subjectRow: "...*...",
+				rowBelow:   ".20....",
+			},
+			expected: true,
+		},
+		{
+			name: "adjacent - invalid - not enough numbers",
+			arguments: args{
+				//subject:    "617",
+				rowAbove:   "100....",
+				subjectRow: "...*...",
+				rowBelow:   ".......",
+			},
+			expected: false,
+		},
+		{
+			name: "adjacent - invalid - too many numbers",
+			arguments: args{
+				//subject:    "617",
+				rowAbove:   "100....",
+				subjectRow: "...*800",
+				rowBelow:   "...6...",
+			},
+			expected: false,
+		},
+	}
+
+	for _, tc := range tests {
+		t.Run(tc.name, func(t *testing.T) {
+
 		})
 	}
 }

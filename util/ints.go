@@ -17,3 +17,23 @@ func Min(input []int) int {
 	}
 	return min
 }
+
+func BoundaryIndices(left, right, rng, minLeft, maxRight int) (int, int) {
+	resultLeft, resultRight := left, right
+
+	for i := -rng; i < left; i++ {
+		if left+i > minLeft {
+			resultLeft = left + i
+			break
+		}
+	}
+
+	for i := rng; i <= maxRight; i-- {
+		if right+i <= maxRight {
+			resultRight = right + i
+			break
+		}
+	}
+
+	return resultLeft, resultRight
+}
