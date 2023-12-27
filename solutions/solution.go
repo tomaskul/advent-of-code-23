@@ -5,6 +5,7 @@ import (
 
 	"github.com/tomaskul/advent-of-code-23/solutions/day01"
 	"github.com/tomaskul/advent-of-code-23/solutions/day02"
+	"github.com/tomaskul/advent-of-code-23/solutions/day03"
 	"github.com/tomaskul/advent-of-code-23/solutions/day04"
 	"github.com/tomaskul/advent-of-code-23/solutions/day05"
 	"github.com/tomaskul/advent-of-code-23/solutions/day06"
@@ -27,7 +28,7 @@ func NewSolutionRegistry() *SolutionRegistry {
 		registry: map[int]func(string) Solution{
 			1: func(s string) Solution { return day01.NewDay01Solution(s) },
 			2: func(s string) Solution { return day02.NewDay02Solution(s) },
-
+			3: func(s string) Solution { return day03.NewDay03Solution(s) },
 			4: func(s string) Solution { return day04.NewDay04Solution(s) },
 			5: func(s string) Solution { return day05.NewDay05Solution(s) },
 			6: func(s string) Solution { return day06.NewDay06Solution(s) },

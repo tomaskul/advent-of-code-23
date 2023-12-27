@@ -22,13 +22,13 @@ func main() {
 
 	registry := s.NewSolutionRegistry()
 
+	printBanner()
 	solution, err := registry.Get(sessionCookie, day)
 	if err != nil {
 		fmt.Println(err.Error())
 		os.Exit(1)
 	}
 
-	printBanner()
 	fmt.Printf("### [Day %d solution Part 1] ###\n", day)
 	solution.PrintPart1()
 
@@ -37,7 +37,8 @@ func main() {
 }
 
 func printBanner() {
-	fmt.Println("=== ~~~ === ~~~ === ~~~ ==== ~~~ ===")
-	fmt.Printf("||\tAdvent of Code 2023\t  ||\n")
-	fmt.Printf("=== ~~~ === ~~~ === ~~~ ==== ~~~ ===\n\n")
+	fmt.Println("  *\t\t\t      *")
+	fmt.Println(" / \\       +++ ~~~ +++       / \\")
+	fmt.Printf("/   \\  Advent of Code 2023  /   \\\n")
+	fmt.Printf("''I''      +++ ~~~ +++      ''I''\n\n")
 }
